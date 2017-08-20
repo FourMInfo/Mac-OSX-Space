@@ -7,7 +7,7 @@ export LANG=en_US.UTF-8
 export JAVA_HOME=$(/System/Library/Frameworks/JavaVM.framework/Versions/Current/Commands/java_home)
 # For a ipython notebook and pyspark integration
 if which pyspark > /dev/null; then
-  export SPARK_HOME="/usr/local/Cellar/apache-spark/2.1.0/libexec/"   # set to whatever version spark you have. Update when necessary
+  export SPARK_HOME="/usr/local/Cellar/apache-spark/2.2.0/libexec/"   # set to whatever version spark you have. Update when necessary
   export PYSPARK_SUBMIT_ARGS="--master local[2]"
 fi
 # ssh keys - add whatever additional keys
