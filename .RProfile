@@ -1,0 +1,104 @@
+# Sample profile file
+# Taken from https://www.r-bloggers.com/fun-with-rprofile-and-customizing-r-startup/
+# set local CRAN mirror here - commented out since we don't currently use one
+#local({r <- getOption("repos")
+#      r["CRAN"] <- "http://cran.revolutionanalytics.com"
+#      options(repos=r)})
+ 
+# keeping this option TRUE causes problems
+options(stringsAsFactors=FALSE)
+options(max.print=10000)
+ 
+# Setting ‘scipen=10’ effectively forces R to never use scientific notation to express very small or large numbers.
+options(scipen=10)
+options(show.signif.stars=FALSE)
+ 
+# default editor
+options(editor="vim")
+ 
+# hide significant stars
+options(show.signif.stars=FALSE)
+ 
+# prevent TK from loading
+options(menu.graphics=FALSE)
+ 
+# same prompt as Python REPL
+options(prompt="> ")
+options(continue="... ")
+options(width = 120)
+ 
+# default to quit w/o saving workspace
+q <- function (save="no", ...) {
+  quit(save=save, ...)
+}
+ 
+# This snippet allows you to tab-complete package names for use in “library()” or “require()” calls
+utils::rc.settings(ipck=TRUE)
+ 
+# prefix history file with timestamp at start
+.First <- function(){
+  if(interactive()){
+    library(utils)
+    timestamp(,prefix=paste("##------ [",getwd(),"] ",sep=""))
+  }
+}
+ 
+# write all commands to history file at exit
+.Last <- function(){
+  if(interactive()){
+    hist_file <- Sys.getenv("R_HISTFILE")
+    if(hist_file=="") hist_file <- "~/.RHistory"
+    savehistory(hist_file)
+  }
+}
+ 
+# Enables the colorized output from R. Need to install "colorout" before uncommenting
+#if(Sys.getenv("TERM") == "xterm-256color")
+#  library("colorout")
+ 
+# Loads a library into the namespace without any warning or startup messages
+sshhh <- function(a.package){
+  suppressWarnings(suppressPackageStartupMessages(
+    library(a.package, character.only=TRUE)))
+}
+ 
+# list of packages you want autoloaded - commented but add your own and then uncomment "if" statement
+#auto.loads <-c("ggplot2")
+ 
+#if(interactive()){
+#  invisible(sapply(auto.loads, sshhh))
+#}
+ 
+# ipak: install and load multiple R packages.
+# check to see if packages are installed. Install them if they are not, then load them into the R session.
+# Since we are installing via brew and there are no issues with permission, it makes sense to install the packages
+# in the R system library. We provide a specific link to the system library directory, in the "install.packages"
+# command, but it is likely to be different and change on upgrade.
+ipak <- function(pkg){
+    new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
+    if (length(new.pkg))
+        install.packages(new.pkg, lib="/usr/local/R/site-library", dependencies = TRUE)
+    sapply(pkg, require, character.only = TRUE)
+}
+ 
+# hidden namespace that rm doesn't erase
+.env <- new.env()
+attach(.env)
+ 
+# remove any row names a data.frame might have
+.env$unrowname <- function(x) {
+  rownames(x) <- NULL
+  x
+}
+ 
+# sanely undo a “factor()” cal
+.env$unfactor <- function(df){
+  id <- sapply(df, is.factor)
+  df[id] <- lapply(df[id], as.character)
+  df
+}
+# set package libraries
+paths <- c("/usr/local/R/site-library","~/R/library")
+.libPaths(paths)
+ 
+message("n*** Successfully loaded .Rprofile ***n")
