@@ -1,14 +1,11 @@
 # export
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
-export GOPATH=$HOME/go
-export PATH=$PATH:/usr/local/opt/go/libexec/bin
 
-# For a ipython notebook and pyspark integration
-if which pyspark > /dev/null; then
-  export SPARK_HOME="/usr/local/Cellar/apache-spark/2.2.0/libexec/"
-  export PYSPARK_SUBMIT_ARGS="--master local[2]"
-fi
+# changes to $PATH
+export GOPATH=$HOME/go
+export PATH=$HOME/Library/Haskell/bin:$HOME/.local/bin:/usr/local/opt/go/libexec/bin:$PATH
+export PATH=$HOME/.cargo/bin:$PATH
 export JAVA_HOME=$(/System/Library/Frameworks/JavaVM.framework/Versions/Current/Commands/java_home)
 
 # ssh keys
@@ -35,5 +32,6 @@ fi
 # docker & kubernetes 
 #if [ `docker-machine status mydockervm` = "Running" ]; then eval $(docker-machine env mydockervm); fi #slow so commented out
 
-# Rust
-export PATH="$HOME/.cargo/bin:$PATH"
+# conda
+. /usr/local/Applications/minconda3/etc/profile.d/conda.sh
+conda activate
